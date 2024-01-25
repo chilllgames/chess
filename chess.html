@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            gap: 2px;
+            background-color: #eee;
+            border: 2px solid #333;
+        }
+
+        .square {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .white {
+            background-color: #f0d9b5;
+        }
+
+        .black {
+            background-color: #b58863;
+        }
+
+        .selected {
+            border: 2px solid red;
+        }
+    </style>
+    <title>Simple Chess Game</title>
+</head>
+<body>
+    <div id="chessboard"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chessboard = document.getElementById('chessboard');
+            const pieces = [
+                "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜",
+                "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟",
+                "", "", "", "", "", "", "", "",
+                "", "", "", "", "", "", "", "",
+                "", "", "", "", "", "", "", "",
+                "", "", "", "", "", "", "", "",
+                "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙",
+                "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"
+            ];
+
+            let selectedPiece = null;
+
+            for (let i = 0; i < pieces.length; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square', (i + Math.floor(i / 8)) % 2 === 0 ? 'white' : 'black');
+                square.innerHTML = pieces[i];
+
+                square.addEventListener('click', () => handleSquareClick(square, i));
+
+                chessboard.appendChild(square);
+            }
+
+            function handleSquareClick(square, index) {
+                if (!selectedPiece) {
+                    if (pieces[index]) {
+                        selectedPiece = { piece: pieces[index], index };
+                        square.classList.add('selected');
+                    }
+                } else {
+                    pieces[selectedPiece.index] = '';
+                    pieces[index] = selectedPiece.piece;
+                    renderChessboard();
+                    selectedPiece = null;
+                }
+            }
+
+            function renderChessboard() {
+                const squares = document.querySelectorAll('.square');
+                squares.forEach((square, index) => {
+                    square.innerHTML = pieces[index];
+                    square.classList.remove('selected');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
